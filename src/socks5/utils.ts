@@ -1,4 +1,4 @@
-function hostname(buf) {
+function getHost(buf) {
   let hostName = ''
   if (buf.length === 4) {
     for (let i = 0; i < buf.length; ++i) {
@@ -16,12 +16,12 @@ function hostname(buf) {
   return hostName
 }
 
-function domainVerify(host) {
+function validateDomain(host) {
   let regex = new RegExp(/^([a-zA-Z0-9|\-|_]+\.)?[a-zA-Z0-9|\-|_]+\.[a-zA-Z0-9|\-|_]+(\.[a-zA-Z0-9|\-|_]+)*$/)
   return regex.test(host)
 }
 
 export {
-  hostname,
-  domainVerify
+  getHost,
+  validateDomain
 }
