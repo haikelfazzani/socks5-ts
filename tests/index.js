@@ -7,11 +7,11 @@
 
 
 
-import server from '../dist/index.mjs';
+import { socks4, socks5 } from '../dist/index.mjs';
 
 const PORT = 1080;
 
-server.listen(PORT, '127.0.0.1', () => {
+socks5.listen(PORT, '127.0.0.1', () => {
   console.log('SOCKS5 server listening on port 1080');
 });
 

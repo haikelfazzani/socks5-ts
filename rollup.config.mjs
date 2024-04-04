@@ -1,11 +1,11 @@
 import dts from 'rollup-plugin-dts';
 import esbuild from 'rollup-plugin-esbuild';
 
-const OUTPUT_FILENAME = `dist/index`;
+// const dir = 'socks4';
 
 const bundle = (config) => ({
   ...config,
-  input: 'src/main.ts',
+  input: `src/index.ts`,
 });
 
 export default [
@@ -13,12 +13,12 @@ export default [
     plugins: [esbuild()],
     output: [
       {
-        file: `${OUTPUT_FILENAME}.cjs`,
+        file: `dist/index.cjs`,
         format: 'cjs',
         sourcemap: false,
       },
       {
-        file: `${OUTPUT_FILENAME}.mjs`,
+        file: `dist/index.mjs`,
         format: 'es',
         sourcemap: false,
       }
@@ -27,7 +27,7 @@ export default [
   bundle({
     plugins: [dts()],
     output: {
-      file: `${OUTPUT_FILENAME}.d.ts`,
+      file: `dist/index.d.ts`,
       format: 'es',
     },
   }),

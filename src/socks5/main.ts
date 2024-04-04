@@ -7,7 +7,7 @@ const AUTH_METHODS = {
   USERPASS: 2
 }
 
-function authorHandler(data: Buffer) {
+function handleAuth(data: Buffer) {
   const sock = this;
 
   const VERSION = data[0];
@@ -25,7 +25,7 @@ function authorHandler(data: Buffer) {
 
   if (methods.includes(AUTH_METHODS.NOAUTH)) {
     sock.write(Buffer.from([VERSION, AUTH_METHODS.NOAUTH]))
-    sock.once('data', requestHandler.bind(sock))
+    sock.once('data', handleRequest.bind(sock))
   }
   else {
     sock.write(Buffer.from([VERSION, 0xff]))
@@ -33,7 +33,7 @@ function authorHandler(data: Buffer) {
   }
 }
 
-function requestHandler(data: Buffer) {
+function handleRequest(data: Buffer) {
   const sock = this;
 
   const [VERSION, CMD, RSV, ATYP] = data as any;
@@ -50,7 +50,7 @@ function requestHandler(data: Buffer) {
   if (ATYP === 1) { // ipv4
     // DST.ADDR = data.slice(4, 8)
     const host = hostname(data.subarray(4, 8))
-    connect(host, port, copyBuf, sock)
+    handleConnect(host, port, copyBuf, sock)
   }
 
   if (ATYP === 3) { // domain
@@ -68,12 +68,12 @@ function requestHandler(data: Buffer) {
         console.log(err)
         return
       }
-      connect(ip, port, copyBuf, sock)
+      handleConnect(ip, port, copyBuf, sock)
     })
   }
 }
 
-function connect(host: string, port: number, data: Buffer, sock: net.Socket) {
+function handleConnect(host: string, port: number, data: Buffer, sock: net.Socket) {
   if (port < 0 || host === '127.0.0.1') return
   console.log('host %s port %d', host, port)
 
@@ -113,5 +113,5 @@ export default net.createServer(sock => {
     sock.destroy()
   })
 
-  sock.once('data', authorHandler.bind(sock))
+  sock.once('data', handleAuth.bind(sock))
 })
