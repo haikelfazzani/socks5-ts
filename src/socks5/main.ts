@@ -1,6 +1,7 @@
 import net from 'net'
 import dns from 'dns'
 import { domainVerify, hostname } from './utils'
+import { ADDRESS_TYPE, SOCKS_VERSION } from './constants';
 
 const AUTH_METHODS = {
   NOAUTH: 0,
@@ -34,42 +35,46 @@ function handleAuth(data: Buffer) {
 }
 
 function handleRequest(data: Buffer) {
-  const sock = this;
+  const sock: net.Socket = this;
 
   const [VERSION, CMD, RSV, ATYP] = data as any;
 
   if (CMD !== 1) console.error('Not support other type connection %d', CMD)
 
-  if (!(VERSION === 5 && CMD < 4 && RSV === 0)) return false;
+  if (!(VERSION === SOCKS_VERSION && CMD < 4 && RSV === 0)) return false;
 
   const port = data.subarray(data.length - 2).readInt16BE(0)
   const copyBuf = Buffer.alloc(data.length);
 
   data.copy(copyBuf);
 
-  if (ATYP === 1) { // ipv4
-    // DST.ADDR = data.slice(4, 8)
-    const host = hostname(data.subarray(4, 8))
-    handleConnect(host, port, copyBuf, sock)
-  }
+  switch (ADDRESS_TYPE[ATYP]) {
+    case ADDRESS_TYPE[1]:
+      const hostName = hostname(data.subarray(4, 8))
+      handleConnect(hostName, port, copyBuf, sock)
+      break;
 
-  if (ATYP === 3) { // domain
-    // DST.ADDR = data[4]
-    const len = data[4];
+    case ADDRESS_TYPE[3]:
+      const len = data[4];
 
-    const host = data.subarray(5, 5 + len).toString('utf8')
-    if (!domainVerify(host)) {
-      console.log('domain format error %s', host)
-      return false
-    }
-    console.log('===> domain host %s', host)
-    dns.lookup(host, (err, ip, version) => {
-      if (err) {
-        console.log(err)
-        return
+      const host = data.subarray(5, 5 + len).toString('utf8')
+      if (!domainVerify(host)) {
+        console.log('domain format error %s', host)
+        return false
       }
-      handleConnect(ip, port, copyBuf, sock)
-    })
+      console.log('===> domain host %s', host)
+      dns.resolve4(host, (err: NodeJS.ErrnoException, addresses: string[]) => {
+        if (err) {
+          console.log('DNS resolve ', err)
+          return
+        }
+        handleConnect(addresses[0], port, copyBuf, sock)
+      })
+      break;
+
+    default:
+      sock.destroy();
+      break;
   }
 }
 
