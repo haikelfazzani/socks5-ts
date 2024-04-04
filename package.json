@@ -1,0 +1,29 @@
+{
+  "name": "socks-ts",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "author": "Haikel Fazzani",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "nodemon tests/index.js"
+  },
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "@types/node": "~20",
+    "esbuild": "^0.20.2",
+    "rollup": "^4.13.2",
+    "rollup-plugin-dts": "^6.1.0",
+    "rollup-plugin-esbuild": "^6.1.1",
+    "rollup-terser": "^1.0.3",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@pondwader/socks5-server": "^1.0.7",
+    "ip-address": "^9.0.5"
+  }
+}
