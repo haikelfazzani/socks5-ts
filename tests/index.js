@@ -1,12 +1,3 @@
-// import { createServer } from '@pondwader/socks5-server';
-
-// const server = createServer();
-// server.listen(1080, '127.0.0.1', () => {
-//     console.log('Server listening on port 5000');
-// })// 
-
-
-
 import { socks4, socks5 } from '../dist/index.mjs';
 
 const PORT = 1080;
