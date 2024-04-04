@@ -1,5 +1,5 @@
 import { Socket } from "net";
-import { CONN_REFUSED_BUFFER } from "./constants";
+import { CONN_REFUSED_BUFFER } from "../constants";
 
 export default function handleConnect(socket: Socket, port: number, ip: string) {
   const destSocket = new Socket();
