@@ -1,7 +1,7 @@
 {
   "name": "socks-ts",
   "version": "1.0.0",
-  "description": "",
+  "description": "Socks 4 and 5 implementation in Node js",
   "type": "module",
   "author": "Haikel Fazzani",
   "main": "dist/index.cjs",
@@ -21,9 +21,5 @@
     "rollup-plugin-esbuild": "^6.1.1",
     "rollup-terser": "^1.0.3",
     "typescript": "^5.2.2"
-  },
-  "dependencies": {
-    "@pondwader/socks5-server": "^1.0.7",
-    "ip-address": "^9.0.5"
   }
 }
